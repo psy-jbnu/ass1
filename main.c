@@ -16,20 +16,21 @@ int save_sensors(char *path, struct sensor *sensors);
 int main(int argc, char *argv[]) {
 	int result = 0;
 	struct sensor sensors[PCS];
-	load_sensors_from_txt("./data.txt", sensors);
+	load_sensors_from_txt("/home/ubuntu/ass1/data.txt", sensors);
 	print_sensors(sensors);
 }
 
-int load_sensors_from_txt(char *path, struct sensor *sensors) {
+int load_sensors_from_txt(char path[], struct sensor sensors[]) {
 	FILE *fptr;
 	int result = 0;
 	fptr = fopen(path,"r");
-	if(fptr = NULL) { 
+	if(fptr == NULL) { 
 		result = -1;
+		printf("%s \n",path);
 		return result;
 	}
 	for(int i = 0; i < PCS; i++) {
-		fscanf(fptr, "%d, %s, %s", &sensors[i].id, sensors[i].name, sensors[i].status);
+		fscanf(fptr, "%d %s %s", &sensors[i].id, sensors[i].name, sensors[i].status);
 		result++;
 	}
     	fclose(fptr);
