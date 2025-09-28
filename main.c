@@ -5,70 +5,40 @@
 
 struct sensor {
     int id;
-    char name[10];
-    char status[8];
+    char name[11];
+    char status[9];
 };
+//txt파일에서 data를 loading하는 함수. sensor 몇개를 가져왔는지 반환하고 못읽으면 -1 반환
+int load_sensors_from_txt(char *path, struct sensor *sensors);
+void print_sensors(struct sensor *sensors);
+int save_sensors(char *path, struct sensor *sensors);
 
-struct sensor **read_txt(char *path);
-int save_dat(char *path, struct sensor **sensors_ptr);
 int main(int argc, char *argv[]) {
-    struct sensor **sensors_ptr = NULL;
-    int result = 0;
-    if (strcmp(argv[1], "init") == 0){
-
-        if(argc != 4) {
-            printf("잘못된 사용");
-            result = -1;
-            free(sensors_ptr);
-            return result;
-        }
-        sensors_ptr = read_txt(strcat(argv[0], argv[2]));
-        if(sensors_ptr == NULL) {
-            printf("로딩이 제대로 안되었습니다.");
-            result = -2;
-            free(sensors_ptr);
-            return result;
-        }
-        if(save_dat(strcat(argv[0], argv[3]),sensors_ptr)==PCS) {
-            printf("저장이 제대로 안되었습니다.");
-            result = -2;
-            free(sensors_ptr);
-            return result;
-        }
-
-    }
-    free(sensors_ptr);
-    return result;
+	int result = 0;
+	struct sensor sensors[PCS];
+	load_sensors_from_txt("./data.txt", sensors);
+	print_sensors(sensors);
 }
 
-struct sensor **read_txt(char *path){
-    FILE *file_ptr = fopen(path,"r");;
-    struct sensor temp;
-    struct sensor **sensors_ptr =(struct sensor **)malloc(sizeof(struct sensor)*PCS);
-    int i = 0;
-
-    if(file_ptr == NULL) {
-        printf("파일이 없음.");
-        free(sensors_ptr);
-        sensors_ptr = NULL;
-        return sensors_ptr;
-    }
-
-
-    while(fscanf(file_ptr, "%d %s %s", &temp.id, temp.name, temp.status)) {
-        *sensors_ptr[i++] = temp;
-    }
-
-    fclose(file_ptr);
-    return sensors_ptr;
+int load_sensors_from_txt(char *path, struct sensor *sensors) {
+	FILE *fptr;
+	int result = 0;
+	fptr = fopen(path,"r");
+	if(fptr = NULL) { 
+		result = -1;
+		return result;
+	}
+	for(int i = 0; i < PCS; i++) {
+		fscanf(fptr, "%d, %s, %s", &sensors[i].id, sensors[i].name, sensors[i].status);
+		result++;
+	}
+    	fclose(fptr);
+	return result;
 }
 
-int save_dat(char *path, struct sensor **sensors_ptr) {
-    FILE *file_ptr = fopen(path, "wb");;
-    int result = 0;
-
-    result = fwrite(*sensors_ptr, sizeof(struct sensor), PCS, file_ptr);
-
-    fclose(file_ptr);
-    return result;
+void print_sensors(struct sensor *sensors) {
+	for(int i = 0; i < PCS; i++) {
+		printf("%04d, %-10s, %s\n", sensors[i].id, sensors[i].name, sensors[i].status);
+	}
 }
+		
