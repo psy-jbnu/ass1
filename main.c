@@ -9,9 +9,9 @@ struct sensor {
 }
 
 sensor **read_txt(char *path);
-int save_dat(char *path, sensor **sensors_ptr);
+int save_dat(char *path, struct sensor **sensors_ptr);
 int main(int argc, char *argv[]) {
-	sensor *sensors_ptr;
+	struct sensor *sensors_ptr;
 	int result = 0;
 	switch (&argv[1]) {
 		case "init":
@@ -39,8 +39,8 @@ int main(int argc, char *argv[]) {
 
 sensor **read_txt(char *path){
 	File *file_ptr;
-	sensor temp = NULL;
-	sensor *sensors_ptr[PCS] =(sensor **)malloc(sizeof(sensor)*PCS);
+	struct sensor temp = NULL;
+	struct sensor *sensors_ptr[PCS] =(sensor **)malloc(sizeof(sensor)*PCS);
 	int i = 0;
 	file_ptr = fopen(path,"r");
 	
@@ -60,7 +60,7 @@ sensor **read_txt(char *path){
 	return sensors_ptr;
 }
 
-int save_dat(char *path, sensor **sensors_ptr) {
+int save_dat(char *path, struct sensor **sensors_ptr) {
 	File *file_ptr;
 	int result = 0;
 	file_ptr = fopen(path, "wb");
