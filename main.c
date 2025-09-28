@@ -10,6 +10,7 @@ struct sensor {
 };
 //txt파일에서 data를 loading하는 함수. sensor 몇개를 가져왔는지 반환하고 못읽으면 -1 반환
 int load_sensors_from_txt(char *path, struct sensor *sensors);
+int load_sensors_from_bin(char *path, struct sensor *sensors);
 void print_sensors(struct sensor *sensors);
 int save_sensors(char *path, struct sensor *sensors);
 
@@ -38,6 +39,20 @@ int main(int argc, char *argv[]) {
 		}
 
         }
+	else if (strcmp(argv[1], "print") == 0){
+		if(argc != 3) {
+                        printf("잘못된 사용");
+                        result = -1;
+                        return result;
+                }
+		if(load_sensors_from_bin(argv[2], sensors) < PCS) {
+                        printf("파일 입력 에러");
+                        result = -1;
+                        return result;
+                }
+		print_sensors(sensors);
+
+	}
 	return result;
 	
 }
@@ -58,7 +73,19 @@ int load_sensors_from_txt(char path[], struct sensor sensors[]) {
     	fclose(fptr);
 	return result;
 }
+int load_sensors_from_bin(char *path, struct sensor *sensors) {
+	FILE *fptr;
+        int result = 0;
+        fptr = fopen(path,"rb");
+        if(fptr == NULL) {
+                result = -1;
+                return result;
+        }
+        result = fread(sensors, sizeof(struct sensor), PCS, fptr);
+        fclose(fptr);
+        return result;
 
+}
 void print_sensors(struct sensor *sensors) {
 	for(int i = 0; i < PCS; i++) {
 		printf("%04d, %-10s, %s\n", sensors[i].id, sensors[i].name, sensors[i].status);
@@ -72,5 +99,4 @@ int save_sensors(char *path, struct sensor *sensors) {
 	fclose(fptr);
 	return result;
 }
-
 
