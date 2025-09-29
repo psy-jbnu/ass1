@@ -3,6 +3,7 @@
 int load_devices_from_txt(char *path, struct device *devices);
 int load_devices_from_bin(char *path, struct device *devices);
 int save_devices(char *path, struct device *devices);
+int save_device(char *path, struct device *devices,int idx);
 int find_device(int id, struct device *devices);
 int edit_device(int idx, struct device *devices, int id, char * name, char *status);
 int main(int argc, char *argv[]) {
@@ -65,11 +66,9 @@ int main(int argc, char *argv[]) {
 		print_all(devices);
 		edit_device(idx, devices, atoi(argv[3]), argv[4], argv[5]);
 		print_all(devices);
-		if(save_devices(argv[2], devices) < PCS) {
+		if(save_device(argv[2], devices, idx) < 1) {
                         printf("파일 출력 에러");
                         result = -1;
-                        return result;
-                }
 	}
 	return result;
 	
@@ -117,11 +116,21 @@ int save_devices(char *path, struct device *devices) {
 	fclose(fptr);
 	return result;
 }
+int save_device(char *path, struct device *devices, int idx) {
+	FILE *fptr = fopen(path, "wb");
+	int result = 0;
+	fseek(fptr, sizeof(struct device)*idx, SEEK_SET); 
+	result = fwrite(devices, sizeof(struct device), 1, fptr);
+	fclose(fptr);
+	return result;
+}
 int find_device(int id, struct device *devices) {
 	int idx = -1;
 	for(int i = 0; i < PCS; i++) {
                 if(devices[i].id == id) idx = i;	
-        }
+        break;
+	}
+	
 	return idx;
 }
 
