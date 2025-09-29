@@ -95,7 +95,7 @@ int load_devices_from_txt(char path[], struct device devices[]) {
 int load_devices_from_bin(char *path, struct device *devices) {
 	FILE *fptr;
         int result = 0;
-        fptr = fopen(path,"rb");
+        fptr = fopen(path,"r+b");
         if(fptr == NULL) {
                 result = -1;
                 return result;
@@ -113,7 +113,7 @@ int save_devices(char *path, struct device *devices) {
 	return result;
 }
 int save_device(char *path, struct device *devices, int idx) {
-	FILE *fptr = fopen(path, "wb");
+	FILE *fptr = fopen(path, "rb+");
 	int result = 0;
 	fseek(fptr, sizeof(struct device)*idx, SEEK_SET); 
 	result = fwrite(&devices[idx], sizeof(struct device), 1, fptr);
@@ -123,8 +123,10 @@ int save_device(char *path, struct device *devices, int idx) {
 int find_device(int id, struct device *devices) {
 	int idx = -1;
 	for(int i = 0; i < PCS; i++) {
-                if(devices[i].id == id) idx = i;	
-        break;
+                if(devices[i].id == id) {
+			idx = i;	
+        		break;
+		}
 	}
 	
 	return idx;
