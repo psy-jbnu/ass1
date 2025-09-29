@@ -69,6 +69,8 @@ int main(int argc, char *argv[]) {
 		if(save_device(argv[2], devices, idx) < 1) {
                         printf("파일 출력 에러");
                         result = -1;
+	
+		}
 	}
 	return result;
 	
@@ -103,12 +105,6 @@ int load_devices_from_bin(char *path, struct device *devices) {
         return result;
 
 }
-void print_all(struct device *devices) {
-	for(int i = 0; i < PCS; i++) {
-		printf("%04d, %-10s, %s\n", devices[i].id, devices[i].name, devices[i].status);
-	}
-}
-		
 int save_devices(char *path, struct device *devices) {
 	FILE *fptr = fopen(path, "wb");
 	int result = 0;
@@ -120,7 +116,7 @@ int save_device(char *path, struct device *devices, int idx) {
 	FILE *fptr = fopen(path, "wb");
 	int result = 0;
 	fseek(fptr, sizeof(struct device)*idx, SEEK_SET); 
-	result = fwrite(devices, sizeof(struct device), 1, fptr);
+	result = fwrite(&devices[idx], sizeof(struct device), 1, fptr);
 	fclose(fptr);
 	return result;
 }
