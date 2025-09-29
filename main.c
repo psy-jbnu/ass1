@@ -72,6 +72,60 @@ int main(int argc, char *argv[]) {
 	
 		}
 	}
+	//./main turnon path
+	else if (strcmp(argv[1], "turnon") == 0){
+                if(argc != 3) {
+                        printf("잘못된 사용");
+                        result = -1;
+                        return result;
+                }
+                
+                if(load_devices_from_bin(argv[2], devices) < PCS) {
+                        printf("파일 입력 에러");
+                        result = -1;
+                        return result;
+                }
+
+		print_all(devices);
+		for(int i = 0; i < PCS; i++) {
+			edit_device(i, devices, devices[i].id, "-", "activate");
+        	}
+
+                print_all(devices);
+
+                if(save_devices(argv[2], devices) < PCS) {
+                        printf("파일 출력 에러");
+                        result = -1;
+
+                }
+        }
+	//./main turnoff path
+        else if (strcmp(argv[1], "turnoff") == 0){
+                if(argc != 2) {
+                        printf("잘못된 사용");
+                        result = -1;
+                        return result;
+                }
+
+                if(load_devices_from_bin(argv[2], devices) < PCS) {
+                        printf("파일 입력 에러");
+                        result = -1;
+                        return result;
+                }
+
+                print_all(devices);
+                for(int i = 0; i < PCS; i++) {
+                        edit_device(i, devices, devices[i].id, "-", "off");
+                }
+
+                print_all(devices);
+
+                if(save_devices(argv[2], devices) < PCS) {
+                        printf("파일 출력 에러");
+                        result = -1;
+
+                }
+        }
 	return result;
 	
 }
